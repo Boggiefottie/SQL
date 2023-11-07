@@ -1,0 +1,454 @@
+chit-----------1---------------
+
+
+CREATE TABLE branch_master (
+    branch_id INT PRIMARY KEY,
+    branch_name VARCHAR(255) NOT NULL
+);
+
+INSERT INTO branch_master VALUES(1,'Akurdi');
+INSERT INTO branch_master VALUES(2,'Nigdii');
+INSERT INTO branch_master VALUES(3,'Pune');
+
+
+SELECT * FROM branch_master;
+DROP TABLE branch_master;
+
+CREATE TABLE employee_master (
+    emp_id INT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    middle_name VARCHAR(255),
+    last_name VARCHAR(255) NOT NULL,
+    department VARCHAR(255),
+    manager_id INT,
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee_master(emp_id)
+);
+
+INSERT INTO employee_master VALUES(1, 'John', 'Doe', 'Smith', 'HR', NULL);
+INSERT INTO employee_master VALUES(2, 'John', 'Doe', 'Smith', 'HR', NULL);
+INSERT INTO employee_master VALUES(3, 'John', 'Doe', 'Smith', 'HR', NULL);
+INSERT INTO employee_master VALUES(4, 'John', 'Doe', 'Smith', 'HR', NULL);
+
+
+select * from employee_master;
+drop table employee_master;
+
+CREATE INDEX idx_emp_name ON employee_master(first_name, middle_name, last_name);
+
+SELECT index_name, table_name, uniqueness, status
+FROM user_indexes
+WHERE table_name = 'employee_master' AND index_name = 'idx_emp_name';
+
+CREATE VIEW employee_details AS
+SELECT emp_id, first_name, middle_name, last_name, department, manager_id
+FROM employee_master;
+
+select * from  employee_details;
+
+chit-------------2---------------
+
+CREATE TABLE Student( stud_id int,deptnm VARCHAR2(25),sem VARCHAR2(25), studname VARCHAR2(25), name int, credits VARCHAR2(25));
+CREATE TABLE Teaches( teacher_id int,teacher_name VARCHAR2(25), salary int, deptnm VARCHAR2(25));
+
+-- Insert records into the Student table
+INSERT INTO Student VALUES(2, 'Comp', 1, 'Akshay', 2023, 30);
+   
+-- Insert records into the Teaches table
+INSERT INTO Teaches VALUES(101, 'Professor Smith', 3000, 'IT');
+INSERT INTO Teaches VALUES(102, 'adi', 3000, 'IT');
+INSERT INTO Teaches VALUES(103, 'Akshay', 3000, 'comp');
+INSERT INTO Teaches VALUES(104, 'shubham', 1000, 'comp');
+  
+select * from Student;
+select * from Teaches;
+
+UPDATE Student
+SET deptnm = 'IT'
+WHERE deptnm = 'Comp';
+
+SELECT deptnm, AVG(salary) as average_salary
+FROM Teaches
+GROUP BY deptnm
+ORDER BY average_salary DESC;
+
+DELETE FROM Teaches
+WHERE salary < 2000;
+
+SELECT deptnm, SUM(salary) as total_salary
+FROM Teaches
+GROUP BY deptnm;
+
+chit-------------3-------------------
+
+-- Create the Dept table
+CREATE TABLE Dept_table (
+    deptId INT PRIMARY KEY,
+    deptName VARCHAR(25),
+    deptLoc VARCHAR(25) -- Add deptLoc column
+);
+
+-- Insert records into the Dept table
+INSERT INTO Dept_table VALUES(1, 'HR', 'New York');
+INSERT INTO Dept_table VALUES(2, 'pr', 'mumbai');
+INSERT INTO Dept_table VALUES(3, 'HR', 'delhi');
+INSERT INTO Dept_table VALUES(4, 'HR', 'delhi');
+
+select * from Dept_table;
+drop table Dept_table;
+
+-- Create the Emp table with a foreign key constraint
+CREATE TABLE Employee_table (
+    empId INT PRIMARY KEY,
+    empName VARCHAR(10) NOT NULL, -- Add Not Null constraint to empName
+    empSal INT,
+    empDeptId INT,
+    FOREIGN KEY (empDeptId) REFERENCES Dept_table(deptId)
+);
+drop table Employee_table;
+
+INSERT INTO Employee_table VALUES (101, 'John', 60000, 2);
+INSERT INTO Employee_table VALUES (103, 'akshay', 50000, 2);
+
+select * from Employee_table;
+
+-- Add Unique constraint to deptLoc
+ALTER TABLE Dept_table
+ADD CONSTRAINT uq_deptLo UNIQUE (deptLoc);
+
+
+
+chit----------4----------------
+
+CREATE TABLE Department_table (
+    deptId INT PRIMARY KEY,
+    deptName VARCHAR(25)
+);
+
+-- Insert records into the Dept table
+INSERT INTO Department_table VALUES (1, 'HR');
+INSERT INTO Department_table VALUES (2, 'pR');
+INSERT INTO Department_table VALUES (3, 'cR');
+INSERT INTO Department_table VALUES (4, 'lR');
+INSERT INTO Department_table VALUES (5, 'tR');
+INSERT INTO Department_table VALUES (6, 'fR');
+
+select * from Department_table;
+drop table Department_table;
+
+CREATE TABLE Employee_tab (
+    empId INT PRIMARY KEY,
+    empName VARCHAR(10) NOT NULL, -- Add Not Null constraint to empName
+    empSal INT,
+    empDeptId INT
+);
+
+INSERT INTO Employee_tab VALUES(101, 'John', 25000, 30);
+INSERT INTO Employee_tab VALUES(102, 'John', 15000, 40);
+INSERT INTO Employee_tab VALUES(103, 'John', 30000, 10);
+INSERT INTO Employee_tab VALUES(104, 'John', 22000, 20);
+
+select * from Employee_tab;
+drop table Employeee_tab;
+
+SELECT *
+FROM Employee_tab
+WHERE empDeptId IN (30, 40, 10);
+
+SELECT *
+FROM Employee_tab
+WHERE empSal BETWEEN 10000 AND 30000;
+
+SELECT COUNT(*) AS total_employees
+FROM Employee_tab;
+
+SELECT empDeptId, AVG(empSal) AS average_salary
+FROM Employee_tab
+GROUP BY empDeptId;
+
+SELECT *
+FROM Employee_tab
+ORDER BY empSal ASC;
+
+chit--------------5-----------------
+
+  
+CREATE TABLE customer(customer_id int ,first_name VARCHAR(25));
+
+INSERT INTO customer VALUES(1, 'akshay');
+INSERT INTO customer VALUES(2, 'shubham');
+INSERT INTO customer VALUES(3, 'vedant');
+INSERT INTO customer VALUES(4, 'devesh');
+INSERT INTO customer VALUES(5, 'adi');
+
+select * from customer;
+drop table customer;
+ 
+CREATE TABLE orders(order_id int ,amount int,customer_id int);
+
+INSERT INTO orders VALUES(1,200,1);
+INSERT INTO orders VALUES(2,300,2);
+INSERT INTO orders VALUES(3,400,3);
+INSERT INTO orders VALUES(4,500,3);
+
+select * from orders;
+drop table orders;
+
+SELECT customer.customer_id, first_name, order_id, amount
+FROM customer
+INNER JOIN orders ON customer.customer_id = orders.customer_id;
+
+
+SELECT customer.customer_id, first_name, order_id, amount
+FROM customer
+LEFT JOIN orders ON customer.customer_id = orders.customer_id;
+
+
+SELECT customer.customer_id, first_name, order_id, amount
+FROM customer
+RIGHT JOIN orders ON customer.customer_id = orders.customer_id;
+
+
+SELECT customer.customer_id, first_name, order_id, amount
+FROM customer
+FULL JOIN orders ON customer.customer_id = orders.customer_id;
+
+
+
+chit-----------6-------------
+
+SET SERVEROUT ON
+SET VERIFY OFF
+
+CREATE TABLE borrower(roll_no NUMBER , name VARCHAR2(25), dateofissue 
+DATE,name_of_book VARCHAR2(25), status VARCHAR2(20));
+CREATE TABLE fine(roll_no NUMBER,date_of_return DATE,amt NUMBER);
+INSERT INTO borrower VALUES(45,'ASHUTOSH',TO_DATE('01-08-2022','DD-MMYYYY'),'HARRY POTTER','PENDING');
+INSERT INTO borrower VALUES(46,'ARYAN',TO_DATE('15-08-2022','DD-MMYYYY'),'DARK MATTER','PENDING');
+INSERT INTO borrower VALUES(47,'ROHAN',TO_DATE('24-08-2022','DD-MMYYYY'),'SILENT HILL','PENDING');
+INSERT INTO borrower VALUES(48,'SANKET',TO_DATE('26-08-2022','DD-MMYYYY'),'GOD OF WAR','PENDING');
+INSERT INTO borrower VALUES(49,'SARTHAK',TO_DATE('09-09-2022','DD-MMYYYY'),'SPIDER-MAN','PENDING');
+
+DECLARE 
+i_roll_no NUMBER;
+name_of_book VARCHAR2(25);
+no_of_days NUMBER;
+return_date DATE := TO_DATE(SYSDATE,'DD-MM-YYYY');
+temp NUMBER;
+doi DATE;
+fine NUMBER;
+BEGIN
+i_roll_no := &i_roll_no;
+name_of_book := '&nameofbook';
+--dbms_output.put_line(return_date);
+SELECT to_date(borrower.dateofissue,'DD-MM-YYYY') INTO doi FROM borrower 
+WHERE borrower.roll_no = i_roll_no AND borrower.name_of_book = name_of_book;
+no_of_days := return_date-doi;
+dbms_output.put_line(no_of_days);
+IF (no_of_days >15 AND no_of_days <=30) THEN
+fine := 5*no_of_days;
+ELSIF (no_of_days>30 ) THEN
+temp := no_of_days-30;
+fine := 150 + temp*50;
+END IF;
+dbms_output.put_line(fine);
+INSERT INTO fine VALUES(i_roll_no,return_date,fine);
+UPDATE borrower SET status = 'RETURNED' WHERE borrower.roll_no = i_roll_no;
+END;
+/
+
+select * from fine;
+
+
+chit-----------7-----------------
+
+ 
+
+--Problem Statement
+--Write a Stored Procedure namely proc_Grade for the categorization of student. If marks scoredby
+--students in examination is <=1500 and marks>=990 then student will be placed in distinction
+--category if marks scored are between 989 and 900 category is first class, if marks 899 and 825
+--category is Higher Second Class.
+--Write a PL/SQL block to use procedure created with above requirement.
+--
+--1. Create following tables and insert data into the tables
+--Stud_Marks(Roll_no.,name, total_marks)†
+--2. Create Result(Roll,Name, Class) table but do not insert any data in it.
+
+
+CREATE TABLE Stud_Marks(Roll_no NUMBER, NAME VARCHAR(20), total_marks NUMBER);
+CREATE TABLE Result(Roll NUMBER,Name VARCHAR(20), Class VARCHAR(20));
+
+DROP TABLE Stud_Marks;
+INSERT INTO Stud_Marks VALUES(45,'ASHUTOSH',990);
+INSERT INTO Stud_Marks VALUES(46,'QWE',991);
+INSERT INTO Stud_Marks VALUES(47,'ASD',992);
+INSERT INTO Stud_Marks VALUES(48,'ZXC',993);
+
+--DROP TABLE Stud_Marks;
+--DROP TABLE Result;
+
+SELECT * from Stud_Marks;
+SELECT * from Result;
+
+
+create or replace procedure proc12_grade
+(temp in number,
+p_roll_no out stud_marks.roll_no%type,
+p_name out stud_marks.name%type,
+p_total out stud_marks.total_marks%type)
+
+as
+begin
+select name,total_marks,roll_no into p_name,p_total,p_roll_no from stud_marks where roll_no=temp;
+if p_total <=1500 and p_total >= 990 then
+insert into result values(p_roll_no,p_name,'distinction');
+else if p_total <=989 and p_total >= 900 then
+insert into result values(p_roll_no,p_name,'first class');
+else if p_total <=899 and p_total >= 825 then
+insert into result values(p_roll_no,p_name,'HSC');
+else
+insert into result values(p_roll_no,p_name,'fail');
+end if;
+end if;
+end if;
+exception
+when no_data_found then
+dbms_output.put_line('Roll no' || temp || 'not found');
+end;
+/
+
+--Execution
+--procedure created.
+
+Declare
+temp number(20);
+p_roll_no stud_marks.roll_no%type;
+p_name stud_marks.name%type;
+p_total stud_marks.total_marks%type;
+Begin
+temp:=&temp;
+Proc12_grade(temp,p_roll_no,p_name,p_total);
+End;
+/
+--
+--Execution: PL/SQL procedure completed
+Select * from result;
+SELECT * from Result;
+
+
+chit-------------8------------------
+
+------------------------------------------Explicit Cursor------------------------------------------------------
+create table stud21(roll number(4), att number(4), status varchar(1));
+
+ 
+
+insert into stud21 values(11, 75, 'n');
+insert into stud21 values(12, 56, 'd');
+insert into stud21 values(13, 85, 'n');
+insert into stud21 values(14, 20, 'd');
+
+drop table stud21;
+select * from stud21;
+
+create table d_stud(roll number(4), att number(4));
+drop table d_stud;
+select * from d_stud;
+
+
+
+--Explicire curser
+Declare
+Cursor crsr_att is select roll, att,status from stud21 where att<75;
+mroll stud21.roll%type;
+matt stud21.att%type;
+mstatus stud21.status%type;
+Begin
+open crsr_att;
+if crsr_att%isopen then
+loop
+fetch crsr_att into mroll,matt,mstatus;
+exit when crsr_att%notfound;
+if crsr_att%found then
+update stud21 set status='D' where roll=mroll;
+insert into d_stud values(mroll,matt);
+end if;
+end loop;
+end if;
+end;
+
+
+
+
+
+
+-----------------------------------------------Parameterized Cursor---------------------------------------- 
+drop table new_class;
+
+select * from new_class;
+
+Create table old_class(roll number(10), name varchar(10));
+drop table old_class;
+
+insert into old_class values(11,'aaa');
+insert into old_class values(12,'bbb');
+insert into old_class values(13,'ccc');
+insert into old_class values(14,'ddd');
+
+select * from old_class;
+
+Declare
+cursor crsr_class is select * from old_class;
+cursor crsr_chk(str_name varchar) is select roll from new_class where name = str_name; 
+str_roll new_class.roll%type;
+str_name new_class.name%type;
+v varchar(10);
+Begin
+Open crsr_class;
+Loop
+fetch crsr_class into str_roll,str_name;
+Exit When crsr_class%NOTFOUND;
+Open crsr_chk(str_name);
+Fetch crsr_chk into v;
+if crsr_chk%FOUND Then
+dbms_output.put_line('Name'|| str_name || 'exist');
+Else
+dbms_output.put_line('Name'|| str_name || ' not exist. Inserting in New_class table'); 
+insert into new_class values(str_roll,str_name); 
+End if;
+Close crsr_chk;
+End loop;
+Close crsr_class;
+End;
+
+
+
+
+
+
+-------------------------------------------------------- explicit cursor†FOR†LOOP----------------------------
+Create table employees (job_id varchar(10), name varchar(10), manager_id number(3));
+
+insert into employees values('CLERK','ABC',111);
+insert into employees values('PEON','XYZ',110);
+insert into employees values('CLERK','PQR',121);
+insert into employees values('CLERK','ZXC',121);
+
+select * from employees;
+
+SET SERVEROUT ON;
+
+DECLARE
+  CURSOR c1 IS
+    SELECT name, job_id FROM employees
+    WHERE job_id LIKE '%CLERK%' AND manager_id > 120
+    ORDER BY name;
+BEGIN
+  FOR item IN c1
+  LOOP
+  DBMS_OUTPUT.PUT_LINE('Name = ' || item.name || ', Job = ' || item.job_id);
+  END LOOP;
+  
+  DBMS_OUTPUT.PUT_LINE('HELLO DONE');
+END;
+
